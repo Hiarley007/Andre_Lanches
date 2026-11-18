@@ -1,7 +1,7 @@
 {
   "name": "andre_lanches",
   "version": "1.0.0",
-  "main": "expo-router/entry",
+  "main": "index.ts",
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
     "@hookform/resolvers": "^7.0.7",
@@ -11,6 +11,7 @@
     "base64-arraybuffer": "^1.0.2",
     "expo": "~58.0.26",
     "expo-constants": "~58.0.16",
+    "expo-font": "~58.0.12",
     "expo-image-manipulator": "~58.0.16",
     "expo-image-picker": "~58.0.10",
     "expo-linking": "~58.0.17",
@@ -28,11 +29,14 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.16",
     "@types/jest": "^30.0.0",
+    "@types/node": "^26.6.6",
     "@types/react": "~19.3.0",
     "jest": "^30.5.2",
     "jest-expo": "^58.0.15",
     "prettier": "^3.10.1",
+    "tsx": "^4.23.15",
     "typescript": "~6.0.3"
   },
   "private": true,
@@ -40,9 +44,11 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "test": "jest",
+    "test": "node --test supabase/tests/db.test.ts supabase/tests/logica.test.ts",
     "typecheck": "tsc --noEmit",
-    "format": "prettier --write \"app/**/*.{ts,tsx}\" \"src/**/*.{ts,tsx}\" \"__tests__/**/*.ts\" \"supabase/functions/**/*.ts\""
+    "format": "prettier --write \"app/**/*.{ts,tsx}\" \"src/**/*.{ts,tsx}\" \"__tests__/**/*.ts\" \"supabase/functions/**/*.ts\"",
+    "test:db": "node --test supabase/tests/db.test.ts",
+    "test:logica": "node --test supabase/tests/logica.test.ts"
   },
   "jest": {
     "preset": "jest-expo",
