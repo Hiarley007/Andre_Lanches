@@ -1,3 +1,4 @@
+
 import {
   Image,
   Pressable,
@@ -20,7 +21,13 @@ interface Props {
   onPress: () => void;
 }
 
-export default function CartaoProduto({ imagem, nome, descricao, preco, onPress }: Props) {
+export default function CartaoProduto({
+  imagem,
+  nome,
+  descricao,
+  preco,
+  onPress,
+}: Props) {
   const { s, cores } = useEstilos(criarEstilos);
 
   return (
@@ -31,16 +38,30 @@ export default function CartaoProduto({ imagem, nome, descricao, preco, onPress 
       accessibilityLabel={`${nome}, ${formatarPreco(preco)}`}
     >
       {imagem ? (
-        <Image source={imagem} style={s.foto} resizeMode="cover" />
+        <Image
+          source={imagem}
+          style={s.foto}
+          resizeMode="cover"
+        />
       ) : (
         <View style={[s.foto, s.placeholder]}>
           <Ionicons name="image-outline" size={28} color={cores.textoSuave} />
         </View>
       )}
-      <Text style={s.nome} numberOfLines={1}>{nome}</Text>
-      <Text style={s.descricao} numberOfLines={2}>{descricao}</Text>
+
+      <Text style={s.nome} numberOfLines={1}>
+        {nome}
+      </Text>
+
+      <Text style={s.descricao} numberOfLines={2}>
+        {descricao}
+      </Text>
+
       <View style={s.espaco} />
-      <Text style={s.preco}>{formatarPreco(preco)}</Text>
+
+      <Text style={s.preco}>
+        {formatarPreco(preco)}
+      </Text>
     </Pressable>
   );
 }
@@ -57,20 +78,34 @@ const criarEstilos = (c: Paleta) =>
       ...sombra,
     },
     foto: {
-      width: 72,
-      height: 72,
-      borderRadius: 36,
-      borderWidth: 2,
-      borderColor: c.primary,
+      width: '100%',
+      height: 112,
+      borderRadius: raios.card - 4,
       marginBottom: 12,
+      backgroundColor: c.background,
     },
     placeholder: {
       backgroundColor: c.background,
       alignItems: 'center',
       justifyContent: 'center',
     },
-    nome: { ...tipografia.nome, fontWeight: '600', color: c.text, textAlign: 'center' },
-    descricao: { ...tipografia.descricao, color: c.textoSuave, textAlign: 'center' },
-    espaco: { flex: 1 },
-    preco: { ...tipografia.preco, color: c.primary, marginTop: espacos.p },
+    nome: {
+      ...tipografia.nome,
+      fontWeight: '600',
+      color: c.text,
+      textAlign: 'center',
+    },
+    descricao: {
+      ...tipografia.descricao,
+      color: c.textoSuave,
+      textAlign: 'center',
+    },
+    espaco: {
+      flex: 1,
+    },
+    preco: {
+      ...tipografia.preco,
+      color: c.primary,
+      marginTop: espacos.p,
+    },
   });

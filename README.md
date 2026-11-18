@@ -68,7 +68,7 @@ npx expo export --platform ios
 - `src/hooks` e `src/services`: consultas e operações do Supabase
 - `src/theme`: cores e tokens visuais
 - `supabase`: schema do banco e testes
-- `assets`: ícones e imagens estáticas do aplicativo
+- - `assets`: ícones e imagens estáticas do aplicativo; as fotos dos produtos ficam em `assets/imagens/` e são associadas pelo slug em `src/lib/imagem.ts`
 
 O aplicativo inicia por `index.ts`, que registra `App.tsx`. A pasta `app/`
 contém somente arquivos de rota legado e não é o ponto de entrada deste projeto.

@@ -103,14 +103,15 @@ const criarEstilos = (c: Paleta) =>
       alignItems: 'center',
       ...sombra,
     },
+
     foto: {
-      width: 150,
-      height: 150,
-      borderRadius: 75,
-      borderWidth: 2,
-      borderColor: c.primary,
+      width: '100%',
+      height: 220,
+      borderRadius: raios.card,
       marginBottom: espacos.m,
+      backgroundColor: c.background,
     },
+
     placeholder: {
       backgroundColor: c.background,
       alignItems: 'center',

@@ -1,3 +1,4 @@
+
 import { useEffect } from 'react';
 import { Image, Pressable, StyleSheet, Text } from 'react-native';
 import { LOGO } from '../lib/imagem';
@@ -13,11 +14,26 @@ export default function Abertura({ onEntrar }: { onEntrar: () => void }) {
   }, [onEntrar]);
 
   return (
-    <Pressable style={s.tela} onPress={onEntrar} accessibilityLabel="Entrar no app">
-      <Image source={LOGO} style={s.logo} />
+    <Pressable
+      style={s.tela}
+      onPress={onEntrar}
+      accessibilityLabel="Entrar no app"
+    >
+      <Image
+        source={LOGO}
+        style={s.logo}
+        resizeMode="contain"
+      />
+
       <Text style={s.nome}>André Lanches</Text>
-      <Text style={s.frase}>Lanche bom, quente e honesto</Text>
-      <Text style={s.toque}>Toque para entrar</Text>
+
+      <Text style={s.frase}>
+        Lanche bom, quente e honesto
+      </Text>
+
+      <Text style={s.toque}>
+        Toque para entrar
+      </Text>
     </Pressable>
   );
 }
@@ -31,14 +47,27 @@ const criarEstilos = (c: Paleta) =>
       justifyContent: 'center',
       padding: espacos.g,
     },
-    logo: { width: 120, height: 120, borderRadius: 60, backgroundColor: '#FFFFFF' },
+
+    logo: {
+      width: 120,
+      height: 120,
+      backgroundColor: 'transparent',
+      borderRadius: 0,
+    },
+
     nome: {
       ...tipografia.titulo,
       fontSize: 32,
       color: c.onPrimary,
       marginTop: espacos.g,
     },
-    frase: { ...tipografia.nome, color: c.onPrimary, marginTop: espacos.p },
+
+    frase: {
+      ...tipografia.nome,
+      color: c.onPrimary,
+      marginTop: espacos.p,
+    },
+
     toque: {
       ...tipografia.descricao,
       color: c.onPrimary,

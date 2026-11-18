@@ -1,3 +1,4 @@
+
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -27,37 +28,60 @@ export default function Header({
 
   return (
     <View style={[s.container, { paddingTop: insets.top + espacos.p }]}>
+      {/* Identidade visual e ações */}
       <View style={s.marca}>
-        <View style={s.logo}>
-          <Image source={LOGO} style={s.logoImagem} />
+        <View style={s.identidade}>
+          <View style={s.logo}>
+            <Image
+              source={LOGO}
+              style={s.logoImagem}
+              resizeMode="contain"
+            />
+          </View>
+
+          <Text style={s.nome}>André Lanches</Text>
         </View>
-        <Text style={s.nome}>André Lanches</Text>
-        <Pressable
-          style={s.icone}
-          onPress={onConfig}
-          accessibilityRole="button"
-          accessibilityLabel="Configurações"
-        >
-          <Ionicons name="settings-outline" size={24} color={cores.onPrimary} />
-        </Pressable>
-        <Pressable
-          style={s.icone}
-          onPress={onCarrinho}
-          accessibilityRole="button"
-          accessibilityLabel={`Seu pedido, ${quantidade} itens`}
-        >
-          <Ionicons name="cart-outline" size={26} color={cores.onPrimary} />
-          {quantidade > 0 ? (
-            <View style={s.selo}>
-              <Text style={s.seloTexto}>{quantidade}</Text>
-            </View>
-          ) : null}
-        </Pressable>
+
+        <View style={s.acoes}>
+          <Pressable
+            style={s.icone}
+            onPress={onConfig}
+            accessibilityRole="button"
+            accessibilityLabel="Configurações"
+          >
+            <Ionicons
+              name="settings-outline"
+              size={23}
+              color={cores.onPrimary}
+            />
+          </Pressable>
+
+          <Pressable
+            style={s.icone}
+            onPress={onCarrinho}
+            accessibilityRole="button"
+            accessibilityLabel={`Seu pedido, ${quantidade} itens`}
+          >
+            <Ionicons
+              name="cart-outline"
+              size={26}
+              color={cores.onPrimary}
+            />
+
+            {quantidade > 0 ? (
+              <View style={s.selo}>
+                <Text style={s.seloTexto}>{quantidade}</Text>
+              </View>
+            ) : null}
+          </Pressable>
+        </View>
       </View>
 
+      {/* Navegação */}
       <View style={s.abas}>
         {ABAS.map((item) => {
           const ativa = item.id === aba;
+
           return (
             <Pressable
               key={item.id}
@@ -66,7 +90,9 @@ export default function Header({
               accessibilityRole="tab"
               accessibilityState={{ selected: ativa }}
             >
-              <Text style={[s.abaTexto, ativa && s.abaTextoAtivo]}>{item.rotulo}</Text>
+              <Text style={[s.abaTexto, ativa && s.abaTextoAtivo]}>
+                {item.rotulo}
+              </Text>
             </Pressable>
           );
         })}
@@ -82,23 +108,55 @@ const criarEstilos = (c: Paleta) =>
       paddingHorizontal: espacos.m,
       paddingBottom: espacos.m,
     },
+
     marca: {
       flexDirection: 'row',
       alignItems: 'center',
-      height: 48,
+      justifyContent: 'space-between',
+      height: 54,
       marginBottom: espacos.p,
     },
+
+    identidade: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+    },
+
     logo: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
+      width: 46,
+      height: 46,
+      borderRadius: 23,
       backgroundColor: '#FFFFFF',
       alignItems: 'center',
       justifyContent: 'center',
+      overflow: 'hidden',
     },
-    logoImagem: { width: 30, height: 30 },
-    nome: { ...tipografia.titulo, color: c.onPrimary, flex: 1, marginLeft: espacos.p },
-    icone: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
+
+    logoImagem: {
+      width: 38,
+      height: 38,
+    },
+
+    nome: {
+      ...tipografia.titulo,
+      color: c.onPrimary,
+      marginLeft: espacos.p,
+      fontWeight: '700',
+    },
+
+    acoes: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+
+    icone: {
+      width: 44,
+      height: 44,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+
     selo: {
       position: 'absolute',
       top: 4,
@@ -111,7 +169,13 @@ const criarEstilos = (c: Paleta) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
-    seloTexto: { fontSize: 11, fontWeight: '700', color: '#E50021' },
+
+    seloTexto: {
+      fontSize: 11,
+      fontWeight: '700',
+      color: '#E50021',
+    },
+
     abas: {
       flexDirection: 'row',
       height: 52,
@@ -119,6 +183,7 @@ const criarEstilos = (c: Paleta) =>
       borderRadius: raios.card,
       backgroundColor: 'rgba(255,255,255,0.2)',
     },
+
     aba: {
       flex: 1,
       height: 44,
@@ -126,7 +191,18 @@ const criarEstilos = (c: Paleta) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
-    abaAtiva: { backgroundColor: c.surface, ...sombra },
-    abaTexto: { ...tipografia.rotulo, color: c.onPrimary },
-    abaTextoAtivo: { color: c.primary },
+
+    abaAtiva: {
+      backgroundColor: c.surface,
+      ...sombra,
+    },
+
+    abaTexto: {
+      ...tipografia.rotulo,
+      color: c.onPrimary,
+    },
+
+    abaTextoAtivo: {
+      color: c.primary,
+    },
   });
