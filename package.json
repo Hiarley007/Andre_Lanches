@@ -35,6 +35,7 @@
     "jest": "^30.5.2",
     "jest-expo": "^58.0.15",
     "prettier": "^3.10.1",
+    "tsx": "^4.23.15",
     "typescript": "~6.0.3"
   },
   "private": true,
@@ -44,7 +45,8 @@
     "ios": "expo start --ios",
     "test": "jest",
     "typecheck": "tsc --noEmit",
-    "format": "prettier --write \"app/**/*.{ts,tsx}\" \"src/**/*.{ts,tsx}\" \"__tests__/**/*.ts\" \"supabase/functions/**/*.ts\""
+    "format": "prettier --write \"app/**/*.{ts,tsx}\" \"src/**/*.{ts,tsx}\" \"__tests__/**/*.ts\" \"supabase/functions/**/*.ts\"",
+    "test:db": "node --test supabase/tests/db.test.ts"
   },
   "jest": {
     "preset": "jest-expo",
