@@ -133,8 +133,9 @@ const criarEstilos = (c: Paleta) =>
     },
 
     foto: {
-      width: '100%',
-      height: '100%',
+      width: 'auto',
+      height: 'auto',
+      resizeMode: 'cover',
       borderRadius: raios.card - 3,
     },
 

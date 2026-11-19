@@ -1,27 +1,50 @@
+
 import { useCallback, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 import Header from './src/components/Header';
 import EntregaFlutuante from './src/components/EntregaFlutuante';
-import { AlertaProvider } from './src/context/AlertaContext';
+
+import {
+  AlertaProvider,
+  useAlerta,
+} from './src/context/AlertaContext';
+
 import { TemaProvider, useTema } from './src/context/TemaContext';
-import { adicionarItem, alterarQuantidade, totalItens } from './src/domain/carrinho';
+
+import {
+  adicionarItem,
+  alterarQuantidade,
+  totalItens,
+} from './src/domain/carrinho';
+
 import { abaAtiva } from './src/domain/navegacao';
-import { montarPayload, montarPedido, numeroLocal } from './src/domain/pedido';
+
+import {
+  montarPayload,
+  montarPedido,
+  numeroLocal,
+} from './src/domain/pedido';
+
 import { criarPedido } from './src/services/pedidoService';
+
 import Abertura from './src/screens/Abertura';
 import Carrinho from './src/screens/Carrinho';
 import Checkout from './src/screens/Checkout';
 import Confirmacao from './src/screens/Confirmacao';
+
 import Configuracoes, {
   type IdNotificacao,
   type Notificacoes,
 } from './src/screens/Configuracoes';
+
 import Contato from './src/screens/Contato';
 import DetalheProduto from './src/screens/DetalheProduto';
 import ListaProdutos from './src/screens/ListaProdutos';
 import SobreNos from './src/screens/SobreNos';
+
 import type {
   DadosCheckout,
   IdAba,
@@ -48,11 +71,14 @@ export default function App() {
 
 function Aplicativo() {
   const { cores, esquema } = useTema();
+  const mostrarAlerta = useAlerta();
+
   const [tela, setTela] = useState<Tela>('abertura');
   const [telaAnterior, setTelaAnterior] = useState<Tela>('lanches');
   const [produto, setProduto] = useState<ProdutoDetalhe | null>(null);
   const [itens, setItens] = useState<ItemCarrinho[]>([]);
   const [pedido, setPedido] = useState<Pedido | null>(null);
+
   const [notificacoes, setNotificacoes] = useState<Notificacoes>({
     promocoes: false,
     pedido: false,
@@ -66,6 +92,7 @@ function Aplicativo() {
       setTela(telaAnterior);
       return;
     }
+
     setTelaAnterior(tela);
     setTela('config');
   }
@@ -83,15 +110,34 @@ function Aplicativo() {
       preco: promo.preco,
       opcoes: null,
     });
+
     setTela('detalhe');
   }
 
-  function adicionarAoCarrinho(linha: LinhaPedido, quantidade: number) {
-    setItens((atuais) => adicionarItem(atuais, linha, quantidade));
+  // Adiciona o produto e chama o alerta personalizado.
+  function adicionarAoCarrinho(
+    linha: LinhaPedido,
+    quantidade: number,
+  ) {
+    setItens((atuais) =>
+      adicionarItem(atuais, linha, quantidade),
+    );
+
+    mostrarAlerta(
+      'Produto adicionado!',
+      `${quantidade}x ${linha.nome} foi adicionado ao seu carrinho.`,
+      'sucesso',
+    );
   }
 
-  function atualizarNotificacao(id: IdNotificacao, valor: boolean) {
-    setNotificacoes((atuais) => ({ ...atuais, [id]: valor }));
+  function atualizarNotificacao(
+    id: IdNotificacao,
+    valor: boolean,
+  ) {
+    setNotificacoes((atuais) => ({
+      ...atuais,
+      [id]: valor,
+    }));
   }
 
   async function confirmarPedido(dados: DadosCheckout) {
@@ -103,14 +149,23 @@ function Aplicativo() {
     });
 
     try {
-      const numero = await criarPedido(montarPayload(pedidoLocal));
-      setPedido({ ...pedidoLocal, numero: String(numero), salvo: true });
+      const numero = await criarPedido(
+        montarPayload(pedidoLocal),
+      );
+
+      setPedido({
+        ...pedidoLocal,
+        numero: String(numero),
+        salvo: true,
+      });
     } catch (erro) {
       if (!(erro instanceof Error)) {
         throw erro;
       }
+
       setPedido(pedidoLocal);
     }
+
     setTela('confirmacao');
   }
 
@@ -122,15 +177,21 @@ function Aplicativo() {
   }
 
   let conteudo: ReactNode = null;
+
   switch (tela) {
     case 'abertura':
       conteudo = <Abertura onEntrar={entrar} />;
       break;
+
     case 'lanches':
       conteudo = (
-        <ListaProdutos onAbrirProduto={abrirProduto} onAbrirPromocao={abrirPromocao} />
+        <ListaProdutos
+          onAbrirProduto={abrirProduto}
+          onAbrirPromocao={abrirPromocao}
+        />
       );
       break;
+
     case 'detalhe':
       conteudo = produto ? (
         <DetalheProduto
@@ -139,15 +200,20 @@ function Aplicativo() {
           onAdicionar={adicionarAoCarrinho}
         />
       ) : (
-        <TelaIndisponivel onVoltar={() => setTela('lanches')} />
+        <TelaIndisponivel
+          onVoltar={() => setTela('lanches')}
+        />
       );
       break;
+
     case 'carrinho':
       conteudo = (
         <Carrinho
           itens={itens}
           onAlterar={(id, delta) =>
-            setItens((atuais) => alterarQuantidade(atuais, id, delta))
+            setItens((atuais) =>
+              alterarQuantidade(atuais, id, delta),
+            )
           }
           onLimpar={() => setItens([])}
           onVerCardapio={() => setTela('lanches')}
@@ -155,6 +221,7 @@ function Aplicativo() {
         />
       );
       break;
+
     case 'checkout':
       conteudo = (
         <Checkout
@@ -164,22 +231,34 @@ function Aplicativo() {
         />
       );
       break;
+
     case 'confirmacao':
       conteudo = pedido ? (
-        <Confirmacao pedido={pedido} onNovoPedido={iniciarNovoPedido} />
+        <Confirmacao
+          pedido={pedido}
+          onNovoPedido={iniciarNovoPedido}
+        />
       ) : (
-        <TelaIndisponivel onVoltar={() => setTela('lanches')} />
+        <TelaIndisponivel
+          onVoltar={() => setTela('lanches')}
+        />
       );
       break;
+
     case 'sobre':
       conteudo = <SobreNos />;
       break;
+
     case 'contato':
       conteudo = <Contato />;
       break;
+
     case 'config':
       conteudo = (
-        <Configuracoes notificacoes={notificacoes} onNotificacao={atualizarNotificacao} />
+        <Configuracoes
+          notificacoes={notificacoes}
+          onNotificacao={atualizarNotificacao}
+        />
       );
       break;
   }
@@ -187,8 +266,16 @@ function Aplicativo() {
   const mostrarNavegacao = tela !== 'abertura';
 
   return (
-    <View style={[styles.container, { backgroundColor: cores.background }]}>
-      <StatusBar style={esquema === 'escuro' ? 'light' : 'dark'} />
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: cores.background },
+      ]}
+    >
+      <StatusBar
+        style={esquema === 'escuro' ? 'light' : 'dark'}
+      />
+
       {mostrarNavegacao ? (
         <Header
           aba={abaAtiva(tela)}
@@ -198,17 +285,55 @@ function Aplicativo() {
           onConfig={abrirConfiguracoes}
         />
       ) : null}
-      <View style={styles.conteudo}>{conteudo}</View>
+
+      <View style={styles.conteudo}>
+        {conteudo}
+      </View>
+
+      {/* BOTÃO TEMPORÁRIO PARA TESTAR O ALERTA */}
+      {mostrarNavegacao ? (
+        <Pressable
+          onPress={() =>
+            mostrarAlerta(
+              'Teste do alerta',
+              'O alerta personalizado está funcionando!',
+              'sucesso',
+            )
+          }
+          style={[
+            styles.botaoTeste,
+            { backgroundColor: cores.primary },
+          ]}
+        >
+          <Text
+            style={[
+              styles.textoTeste,
+              { color: cores.onPrimary },
+            ]}
+          >
+            Testar alerta
+          </Text>
+        </Pressable>
+      ) : null}
+
       {mostrarNavegacao ? <EntregaFlutuante /> : null}
     </View>
   );
 }
 
-function TelaIndisponivel({ onVoltar }: { onVoltar: () => void }) {
+function TelaIndisponivel({
+  onVoltar,
+}: {
+  onVoltar: () => void;
+}) {
   return (
     <View style={styles.indisponivel}>
       <Text>Esta tela não está disponível.</Text>
-      <Pressable onPress={onVoltar} accessibilityRole="button">
+
+      <Pressable
+        onPress={onVoltar}
+        accessibilityRole="button"
+      >
         Voltar ao cardápio
       </Pressable>
     </View>
@@ -216,7 +341,27 @@ function TelaIndisponivel({ onVoltar }: { onVoltar: () => void }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  conteudo: { flex: 1 },
-  indisponivel: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 },
+  container: {
+    flex: 1,
+  },
+  conteudo: {
+    flex: 1,
+  },
+  indisponivel: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+  },
+  botaoTeste: {
+    marginHorizontal: 16,
+    marginVertical: 8,
+    padding: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textoTeste: {
+    fontWeight: 'bold',
+  },
 });

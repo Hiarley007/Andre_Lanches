@@ -1,4 +1,11 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
+
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+} from 'react-native';
+
 import { Ionicons } from '@expo/vector-icons';
 import { espacos, raios, tipografia, type Paleta } from '../theme';
 import { useEstilos } from '../context/TemaContext';
@@ -20,11 +27,16 @@ export default function BotaoPrimario({
   icone = null,
 }: Props) {
   const { s, cores } = useEstilos(criarEstilos);
+
   const bloqueado = desabilitado || carregando;
 
   return (
     <Pressable
-      style={[s.botao, bloqueado && s.desativado]}
+      style={({ pressed }) => [
+        s.botao,
+        bloqueado && s.desativado,
+        pressed && !bloqueado && s.pressionado,
+      ]}
       onPress={onPress}
       disabled={bloqueado}
       accessibilityRole="button"
@@ -34,8 +46,17 @@ export default function BotaoPrimario({
         <ActivityIndicator color={cores.onPrimary} />
       ) : (
         <>
-          {icone ? <Ionicons name={icone} size={20} color={cores.onPrimary} /> : null}
-          <Text style={[s.texto, icone ? s.comIcone : null]}>{texto}</Text>
+          {icone ? (
+            <Ionicons
+              name={icone}
+              size={20}
+              color={cores.onPrimary}
+            />
+          ) : null}
+
+          <Text style={[s.texto, icone ? s.comIcone : null]}>
+            {texto}
+          </Text>
         </>
       )}
     </Pressable>
@@ -52,7 +73,23 @@ const criarEstilos = (c: Paleta) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
-    desativado: { opacity: 0.45 },
-    texto: { ...tipografia.preco, color: c.onPrimary },
-    comIcone: { marginLeft: espacos.p },
+
+    desativado: {
+      opacity: 0.45,
+    },
+
+    // Efeito visual ao pressionar o botão.
+    pressionado: {
+      opacity: 0.75,
+      transform: [{ scale: 0.97 }],
+    },
+
+    texto: {
+      ...tipografia.preco,
+      color: c.onPrimary,
+    },
+
+    comIcone: {
+      marginLeft: espacos.p,
+    },
   });
